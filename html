@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Hacker Terminal</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: black;
+      color: #00ff00;
+      font-family: 'Courier New', Courier, monospace;
+      overflow: hidden;
+    }
+
+    .screen, .error-message, .terminal {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+    }
+
+    .screen {
+      background-color: black;
+    }
+
+    .error-message {
+      color: red;
+      font-size: 1.5em;
+      background-color: black;
+    }
+
+    .terminal {
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    .output {
+      text-align: left;
+      width: 90%;
+      max-width: 800px;
+      background-color: #000000cc;
+      padding: 20px;
+      border: 1px solid #00ff00;
+      box-shadow: 0 0 20px #00ff00;
+      margin-bottom: 10px;
+      height: 300px;
+      overflow-y: auto;
+    }
+
+    .input-line {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    input {
+      background-color: black;
+      color: #00ff00;
+      border: none;
+      outline: none;
+      font-family: inherit;
+      font-size: 1em;
+      width: 100%;
+    }
+
+    .blink {
+      animation: blink 1s step-end infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Чорний екран -->
+  <div class="screen" id="blackScreen"></div>
+
+  <!-- Жарт-помилка -->
+  <div class="error-message" id="errorMessage">
+    <p>Помилка : Error 0x80070570 <br>Спроба автоматичного перезапуску системи...</p>
+  </div>
+
+  <!-- Консоль -->
+  <div class="terminal" id="terminal">
+    <div class="output" id="output">
+      <p><span class="green">root@cyber</span>:~$ Система активована...</p>
+    </div>
+    <div class="input-line">
+      <span class="green">></span>
+      <input type="text" id="commandInput" autofocus placeholder="Введи команду...">
+    </div>
+  </div>
+
+  <script>
+    const blackScreen = document.getElementById('blackScreen');
+    const errorMessage = document.getElementById('errorMessage');
+    const terminal = document.getElementById('terminal');
+    const output = document.getElementById('output');
+    const input = document.getElementById('commandInput');
+
+    // Показ чорного екрану
+    blackScreen.style.display = 'flex';
+
+    setTimeout(() => {
+      blackScreen.style.display = 'none';
+      errorMessage.style.display = 'flex';
+
+      setTimeout(() => {
+        errorMessage.style.display = 'none';
+        terminal.style.display = 'flex';
+        input.focus();
+      }, 3000); // Показ помилки 3 секунди
+
+    }, 2000); // Чорний екран 2 секунди
+
+    // Команди
+    const commands = {
+      help: 'Доступні команди: help, about, clear, joke',
+      about: 'Це хакерська консоль, створена для приколу :)',
+      joke: '— Чому програміст не боїться темряви? Бо там немає багів!',
+      clear: ''
+    };
+
+    // Обробка введених команд
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const cmd = input.value.trim();
+        let response = commands[cmd] ?? `Команду '${cmd}' не знайдено. Введи 'help'`;
+
+        if (cmd === 'clear') {
+          output.innerHTML = '';
+        } else {
+          output.innerHTML += `<p><span class="green">></span> ${cmd}</p><p>${response}</p>`;
+        }
+
+        output.scrollTop = output.scrollHeight;
+        input.value = '';
+      }
+    });
+  </script>
+
+</body>
+</html>
